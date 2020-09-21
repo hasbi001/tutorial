@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+
+Route::get('/','ArtikelController@index')->name('artikel');
+Route::get('/artikel/create','ArtikelController@create')->name('artikel.create');
+Route::post('/artikel/create','ArtikelController@store')->name('artikel.store');

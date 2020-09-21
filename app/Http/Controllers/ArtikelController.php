@@ -25,7 +25,7 @@ class ArtikelController extends Controller
      */
     public function create()
     {
-        //
+        return view('artikel.create');
     }
 
     /**
@@ -36,7 +36,17 @@ class ArtikelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $model = new Artikel();
+        $model->title = $request->title;
+        $model->post = $request->post;
+
+        if ($model->save()) {
+            return redirect()->route('artikel');
+        }
+        else
+        {
+            return  back();
+        }
     }
 
     /**
@@ -45,9 +55,10 @@ class ArtikelController extends Controller
      * @param  \App\Models\Artikel  $artikel
      * @return \Illuminate\Http\Response
      */
-    public function show(Artikel $artikel)
+    public function show($id)
     {
-        //
+        $model = Artikel::findOrFail($id);
+        return view('artikel.view', ['model' => $model]);
     }
 
     /**
@@ -58,7 +69,8 @@ class ArtikelController extends Controller
      */
     public function edit(Artikel $artikel)
     {
-        //
+        $model = Artikel::findOrFail($id);
+        return view('artikel.edit', ['model' => $model]);
     }
 
     /**
@@ -68,9 +80,19 @@ class ArtikelController extends Controller
      * @param  \App\Models\Artikel  $artikel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Artikel $artikel)
+    public function update(Request $request, $id)
     {
-        //
+        $model = Artikel::find($id);
+        $model->title = $request->title;
+        $model->post = $request->post;
+
+        if ($model->save()) {
+            return redirect()->route('artikel');
+        }
+        else
+        {
+            return  back();
+        }
     }
 
     /**
@@ -79,8 +101,10 @@ class ArtikelController extends Controller
      * @param  \App\Models\Artikel  $artikel
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Artikel $artikel)
+    public function destroy($id)
     {
-        //
+        $model = Artikel::find($id);
+        $model->delete();
+        return redirect()->route('artikel');
     }
 }
