@@ -15,6 +15,9 @@ class CreateArtikel extends Migration
     {
         Schema::create('artikel', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('post');
+            $table->integer('user_id')->nullable();
             $table->timestamps();
         });
     }
