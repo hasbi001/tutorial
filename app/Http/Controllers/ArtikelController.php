@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Artikel;
 use Illuminate\Http\Request;
 use App\Models\Shortcode;
+use DataTables;
+use App\Helpers\Post;
 
 class ArtikelController extends Controller
 {
@@ -15,7 +17,7 @@ class ArtikelController extends Controller
      */
     public function index()
     {
-        return view('artike.index');
+        return view('artikel.index');
     }
 
     /**
@@ -25,7 +27,9 @@ class ArtikelController extends Controller
      */
     public function create()
     {
-        return view('artikel.create');
+        $model = new Artikel();
+        $url = route('artikel.store');
+        return view('artikel.form',['model' => $model,'url'=>$url]);
     }
 
     /**
@@ -58,7 +62,11 @@ class ArtikelController extends Controller
     public function show($id)
     {
         $model = Artikel::findOrFail($id);
-        return view('artikel.view', ['model' => $model]);
+        $render = new Post($model->post);
+        echo "<pre>";
+        print_r($render);
+        die();
+        return view('artikel.view', ['model' => $model,'render'=>$render]);
     }
 
     /**
@@ -67,10 +75,11 @@ class ArtikelController extends Controller
      * @param  \App\Models\Artikel  $artikel
      * @return \Illuminate\Http\Response
      */
-    public function edit(Artikel $artikel)
+    public function edit($id)
     {
         $model = Artikel::findOrFail($id);
-        return view('artikel.edit', ['model' => $model]);
+        $url = route('artikel.update');
+        return view('artikel.edit', ['model' => $model,'url'=>$url]);
     }
 
     /**
@@ -106,5 +115,15 @@ class ArtikelController extends Controller
         $model = Artikel::find($id);
         $model->delete();
         return redirect()->route('artikel');
+    }
+
+    public function loadData()
+    {
+        $model = Artikel::select(['id', 'title', 'created_at']);
+        return Datatables::of($model)
+            ->addColumn('action', function ($data) {
+                return '<a href="'.route('artikel.view', ['id' => $data->id]).'" class="btn btn-xs btn-primary">View</a>';
+            })
+            ->make(true);
     }
 }
